@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Hello, World! | ITSD 85 CI/CD Lab</title>
+    <link rel="stylesheet" href="/style.css">
+  </head>
+  <body>
+    <main class="card">
+      <h1>Hello, World!</h1>
+      <p class="subtitle">Welcome to my ITSD 85 CI/CD Laboratory Project.</p>
+      <p>This application demonstrates automated build, testing, and deployment.</p>
+
+      <dl>
+        <div>
+          <dt>Deployment status</dt>
+          <dd id="status" role="status">Checking...</dd>
+        </div>
+        <div>
+          <dt>Application version</dt>
+          <dd id="version">Loading...</dd>
+        </div>
+      </dl>
+    </main>
+
+    <footer>ITSD 85 | Automated CI/CD Laboratory</footer>
+
+    <script type="module">
+      // Ask the backend for the status and version, so neither is hardcoded here.
+      const statusElement = document.querySelector('#status');
+      const versionElement = document.querySelector('#version');
+
+      try {
+        const response = await fetch('/health', { cache: 'no-store' });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const { status, version } = await response.json();
+
+        const isOnline = status === 'ok';
+        statusElement.textContent = isOnline ? 'Online' : 'Unavailable';
+        statusElement.className = isOnline ? 'online' : 'offline';
+        versionElement.textContent = version;
+      } catch {
+        statusElement.textContent = 'Unavailable';
+        statusElement.className = 'offline';
+        versionElement.textContent = 'Unknown';
+      }
+    </script>
+  </body>
+</html>
